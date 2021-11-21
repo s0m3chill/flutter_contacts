@@ -6,8 +6,7 @@ class NameForm extends StatefulWidget {
   final Name name;
   final void Function(Name) onUpdate;
 
-  NameForm(
-    this.name, {
+  NameForm(this.name, {
     @required this.onUpdate,
     Key key,
   }) : super(key: key);
@@ -18,9 +17,8 @@ class NameForm extends StatefulWidget {
 
 class _NameFormState extends State<NameForm> {
   final _formKey = GlobalKey<FormState>();
-  final translator = GoogleTranslator();
-  var trinput = '';
-  var res = '';
+  final _translator = GoogleTranslator();
+  List<TextEditingController> _translationControllers;
 
   TextEditingController _firstController;
   TextEditingController _lastController;
@@ -47,11 +45,11 @@ class _NameFormState extends State<NameForm> {
         TextEditingController(text: widget.name.lastPhonetic);
     _middlePhoneticController =
         TextEditingController(text: widget.name.middlePhonetic);
-    trinput = widget.name.first;
+
+    _translationControllers = [_firstController, _lastController, _middleController];
   }
 
   void _onChanged() {
-    _firstController.text = res;
     final name = Name(
         first: _firstController.text,
         last: _lastController.text,
@@ -70,13 +68,15 @@ class _NameFormState extends State<NameForm> {
     return Column(
       children: [
         ElevatedButton(
-            onPressed: () => translator.translate(trinput, to: 'en').then(
-                (result) {
+            onPressed: () {
+              for (var c in _translationControllers) {
+                _translator.translate(c.text, to: 'en').then((result) {
                   setState(() {
-                    res = result.text;
-                    _firstController.text = res;
+                    c.text = result.text;
                   });
-                }),
+                });
+              }
+            },
             child: Text('Translate')),
         ListTile(
           subtitle: Padding(
@@ -127,7 +127,7 @@ class _NameFormState extends State<NameForm> {
                     keyboardType: TextInputType.text,
                     textCapitalization: TextCapitalization.words,
                     decoration:
-                        InputDecoration(hintText: 'Phonetic first name'),
+                    InputDecoration(hintText: 'Phonetic first name'),
                   ),
                   TextFormField(
                     controller: _lastPhoneticController,
@@ -140,7 +140,7 @@ class _NameFormState extends State<NameForm> {
                     keyboardType: TextInputType.text,
                     textCapitalization: TextCapitalization.words,
                     decoration:
-                        InputDecoration(hintText: 'Phonetic middle name'),
+                    InputDecoration(hintText: 'Phonetic middle name'),
                   ),
                 ],
               ),
