@@ -1,12 +1,16 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_contacts/properties/name.dart';
 import 'package:translator/translator.dart';
+
+enum Language { en, uk }
 
 class NameForm extends StatefulWidget {
   final Name name;
   final void Function(Name) onUpdate;
 
-  NameForm(this.name, {
+  NameForm(
+    this.name, {
     @required this.onUpdate,
     Key key,
   }) : super(key: key);
@@ -19,6 +23,7 @@ class _NameFormState extends State<NameForm> {
   final _formKey = GlobalKey<FormState>();
   final _translator = GoogleTranslator();
   List<TextEditingController> _translationControllers;
+  final _regEx = RegExp(r'[^\w\s]+');
 
   TextEditingController _firstController;
   TextEditingController _lastController;
@@ -46,7 +51,11 @@ class _NameFormState extends State<NameForm> {
     _middlePhoneticController =
         TextEditingController(text: widget.name.middlePhonetic);
 
-    _translationControllers = [_firstController, _lastController, _middleController];
+    _translationControllers = [
+      _firstController,
+      _lastController,
+      _middleController
+    ];
   }
 
   void _onChanged() {
@@ -63,19 +72,27 @@ class _NameFormState extends State<NameForm> {
     widget.onUpdate(name);
   }
 
+  void _onTranslate() {
+    final nameString = _translationControllers.first.text;
+    final isCyrillic = _regEx.hasMatch(nameString);
+    final language =
+        isCyrillic ? describeEnum(Language.en) : describeEnum(Language.uk);
+    for (var c in _translationControllers) {
+      _translator.translate(c.text, to: language).then((result) {
+        setState(() {
+          c.text = result.text;
+        });
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         ElevatedButton(
             onPressed: () {
-              for (var c in _translationControllers) {
-                _translator.translate(c.text, to: 'en').then((result) {
-                  setState(() {
-                    c.text = result.text;
-                  });
-                });
-              }
+              _onTranslate();
             },
             child: Text('Translate')),
         ListTile(
@@ -127,7 +144,7 @@ class _NameFormState extends State<NameForm> {
                     keyboardType: TextInputType.text,
                     textCapitalization: TextCapitalization.words,
                     decoration:
-                    InputDecoration(hintText: 'Phonetic first name'),
+                        InputDecoration(hintText: 'Phonetic first name'),
                   ),
                   TextFormField(
                     controller: _lastPhoneticController,
@@ -140,7 +157,7 @@ class _NameFormState extends State<NameForm> {
                     keyboardType: TextInputType.text,
                     textCapitalization: TextCapitalization.words,
                     decoration:
-                    InputDecoration(hintText: 'Phonetic middle name'),
+                        InputDecoration(hintText: 'Phonetic middle name'),
                   ),
                 ],
               ),
