@@ -120,11 +120,11 @@ class VCardParser {
           // Format is N:<last>;<first>;<middle>;<prefix>;<suffix>
           final parts = content.split(';');
           final n = parts.length;
-          if (n >= 1) contact.name.last = decode(parts[0]);
-          if (n >= 2) contact.name.first = decode(parts[1]);
-          if (n >= 3) contact.name.middle = decode(parts[2]);
-          if (n >= 4) contact.name.prefix = decode(parts[3]);
-          if (n >= 5) contact.name.suffix = decode(parts[4]);
+          // if (n >= 1) contact.name.last = decode(parts[0]);
+          // if (n >= 2) contact.name.first = decode(parts[1]);
+          // if (n >= 3) contact.name.middle = decode(parts[2]);
+          // if (n >= 4) contact.name.prefix = decode(parts[3]);
+          // if (n >= 5) contact.name.suffix = decode(parts[4]);
           break;
         case 'FN':
           contact.displayName = decode(content);
@@ -132,7 +132,7 @@ class VCardParser {
         case 'NICKNAME':
           // Format is NICKNAME:<nickname 1>[,<nickname 2>[,...]]
           final parts = content.split(',');
-          contact.name.nickname = decode(parts[0]);
+          //contact.name.nickname = decode(parts[0]);
           break;
         case 'TEL':
         case 'PHONE':
@@ -307,7 +307,7 @@ class VCardParser {
               _tryAddEvent(contact, date, label, customLabel, false);
               break;
             case 'vnd.android.cursor.item/nickname':
-              contact.name.nickname = decode(contentParts[1]);
+              //contact.name.nickname = decode(contentParts[1]);
               break;
           }
           break;
@@ -344,10 +344,10 @@ class VCardParser {
               SocialMedia(decode(content), label: SocialMediaLabel.jabber));
           break;
         case 'X-PHONETIC-FIRST-NAME':
-          contact.name.firstPhonetic = decode(content);
+          //contact.name.firstPhonetic = decode(content);
           break;
         case 'X-PHONETIC-LAST-NAME':
-          contact.name.lastPhonetic = decode(content);
+          //contact.name.lastPhonetic = decode(content);
           break;
         case 'X-PHONETIC-ORG':
           if (contact.organizations.isEmpty) {

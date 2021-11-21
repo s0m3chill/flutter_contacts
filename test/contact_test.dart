@@ -23,7 +23,16 @@ void main() {
       }
     });
     final newContact = Contact()
-      ..name = Name(first: 'John', last: 'Doe')
+      ..name = Name(
+          first: 'John',
+          last: 'Doe',
+          middle: '',
+          prefix: '',
+          suffix: '',
+          nickname: '',
+          firstPhonetic: '',
+          lastPhonetic: '',
+          middlePhonetic: '')
       ..phones = [
         Phone('555-123-4567'),
         Phone('555-999-9999', label: PhoneLabel.work)

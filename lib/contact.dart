@@ -154,7 +154,17 @@ class Contact {
     List<Note>? notes,
     List<Account>? accounts,
     List<Group>? groups,
-  })  : name = name ?? Name(),
+  })  : name = name ??
+            Name(
+                first: '',
+                last: '',
+                middle: '',
+                prefix: '',
+                suffix: '',
+                nickname: '',
+                firstPhonetic: '',
+                lastPhonetic: '',
+                middlePhonetic: ''),
         phones = phones ?? <Phone>[],
         emails = emails ?? <Email>[],
         addresses = addresses ?? <Address>[],
