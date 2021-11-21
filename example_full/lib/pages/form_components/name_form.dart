@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_contacts/properties/name.dart';
+import 'package:translator/translator.dart';
 
 class NameForm extends StatefulWidget {
   final Name name;
@@ -17,6 +18,9 @@ class NameForm extends StatefulWidget {
 
 class _NameFormState extends State<NameForm> {
   final _formKey = GlobalKey<FormState>();
+  final translator = GoogleTranslator();
+  var trinput = '';
+  var res = '';
 
   TextEditingController _firstController;
   TextEditingController _lastController;
@@ -43,9 +47,11 @@ class _NameFormState extends State<NameForm> {
         TextEditingController(text: widget.name.lastPhonetic);
     _middlePhoneticController =
         TextEditingController(text: widget.name.middlePhonetic);
+    trinput = widget.name.first;
   }
 
   void _onChanged() {
+    _firstController.text = res;
     final name = Name(
         first: _firstController.text,
         last: _lastController.text,
@@ -61,72 +67,87 @@ class _NameFormState extends State<NameForm> {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      subtitle: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Form(
-          key: _formKey,
-          onChanged: _onChanged,
-          child: Column(
-            children: [
-              TextFormField(
-                controller: _firstController,
-                keyboardType: TextInputType.text,
-                textCapitalization: TextCapitalization.words,
-                decoration: InputDecoration(hintText: 'First name'),
+    return Column(
+      children: [
+        ElevatedButton(
+            onPressed: () => translator.translate(trinput, to: 'en').then(
+                (result) {
+                  setState(() {
+                    res = result.text;
+                    _firstController.text = res;
+                  });
+                }),
+            child: Text('Translate')),
+        ListTile(
+          subtitle: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Form(
+              key: _formKey,
+              onChanged: _onChanged,
+              child: Column(
+                children: [
+                  TextFormField(
+                    controller: _firstController,
+                    keyboardType: TextInputType.text,
+                    textCapitalization: TextCapitalization.words,
+                    decoration: InputDecoration(hintText: 'First name'),
+                  ),
+                  TextFormField(
+                    controller: _lastController,
+                    keyboardType: TextInputType.text,
+                    textCapitalization: TextCapitalization.words,
+                    decoration: InputDecoration(hintText: 'Last name'),
+                  ),
+                  TextFormField(
+                    controller: _middleController,
+                    keyboardType: TextInputType.text,
+                    textCapitalization: TextCapitalization.words,
+                    decoration: InputDecoration(hintText: 'Middle name'),
+                  ),
+                  TextFormField(
+                    controller: _prefixController,
+                    keyboardType: TextInputType.text,
+                    textCapitalization: TextCapitalization.words,
+                    decoration: InputDecoration(hintText: 'Prefix'),
+                  ),
+                  TextFormField(
+                    controller: _suffixController,
+                    keyboardType: TextInputType.text,
+                    textCapitalization: TextCapitalization.words,
+                    decoration: InputDecoration(hintText: 'Suffix'),
+                  ),
+                  TextFormField(
+                    controller: _nicknameController,
+                    keyboardType: TextInputType.text,
+                    textCapitalization: TextCapitalization.words,
+                    decoration: InputDecoration(hintText: 'Nickname'),
+                  ),
+                  TextFormField(
+                    controller: _firstPhoneticController,
+                    keyboardType: TextInputType.text,
+                    textCapitalization: TextCapitalization.words,
+                    decoration:
+                        InputDecoration(hintText: 'Phonetic first name'),
+                  ),
+                  TextFormField(
+                    controller: _lastPhoneticController,
+                    keyboardType: TextInputType.text,
+                    textCapitalization: TextCapitalization.words,
+                    decoration: InputDecoration(hintText: 'Phonetic last name'),
+                  ),
+                  TextFormField(
+                    controller: _middlePhoneticController,
+                    keyboardType: TextInputType.text,
+                    textCapitalization: TextCapitalization.words,
+                    decoration:
+                        InputDecoration(hintText: 'Phonetic middle name'),
+                  ),
+                ],
               ),
-              TextFormField(
-                controller: _lastController,
-                keyboardType: TextInputType.text,
-                textCapitalization: TextCapitalization.words,
-                decoration: InputDecoration(hintText: 'Last name'),
-              ),
-              TextFormField(
-                controller: _middleController,
-                keyboardType: TextInputType.text,
-                textCapitalization: TextCapitalization.words,
-                decoration: InputDecoration(hintText: 'Middle name'),
-              ),
-              TextFormField(
-                controller: _prefixController,
-                keyboardType: TextInputType.text,
-                textCapitalization: TextCapitalization.words,
-                decoration: InputDecoration(hintText: 'Prefix'),
-              ),
-              TextFormField(
-                controller: _suffixController,
-                keyboardType: TextInputType.text,
-                textCapitalization: TextCapitalization.words,
-                decoration: InputDecoration(hintText: 'Suffix'),
-              ),
-              TextFormField(
-                controller: _nicknameController,
-                keyboardType: TextInputType.text,
-                textCapitalization: TextCapitalization.words,
-                decoration: InputDecoration(hintText: 'Nickname'),
-              ),
-              TextFormField(
-                controller: _firstPhoneticController,
-                keyboardType: TextInputType.text,
-                textCapitalization: TextCapitalization.words,
-                decoration: InputDecoration(hintText: 'Phonetic first name'),
-              ),
-              TextFormField(
-                controller: _lastPhoneticController,
-                keyboardType: TextInputType.text,
-                textCapitalization: TextCapitalization.words,
-                decoration: InputDecoration(hintText: 'Phonetic last name'),
-              ),
-              TextFormField(
-                controller: _middlePhoneticController,
-                keyboardType: TextInputType.text,
-                textCapitalization: TextCapitalization.words,
-                decoration: InputDecoration(hintText: 'Phonetic middle name'),
-              ),
-            ],
+            ),
           ),
-        ),
-      ),
+        )
+      ],
     );
   }
 }
