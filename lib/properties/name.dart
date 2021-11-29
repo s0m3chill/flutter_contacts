@@ -48,7 +48,7 @@ part 'name.g.dart';
 ///
 
 @freezed
-abstract class Name with _$Name {
+class Name with _$Name {
   const Name._();
 
   const factory Name({
